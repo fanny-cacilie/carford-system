@@ -16,9 +16,10 @@ def create_tables():
                 time.sleep(10)
         print("Failed to create tables after 5 attempts.")
 
+
 def run():
     create_tables()
-    app.run(host= '0.0.0.0', port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=True)
 
 
 api.add_resource(Cars, "/cars")
@@ -27,4 +28,3 @@ api.add_resource(Owners, "/owners")
 
 if __name__ == "__main__":
     run()
-    

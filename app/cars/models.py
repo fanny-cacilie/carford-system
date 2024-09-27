@@ -3,6 +3,7 @@ from sqlalchemy import ForeignKey
 
 from app import db
 
+
 class ColorEnum(Enum):
     yellow = 1
     blue = 2
@@ -16,16 +17,15 @@ class ModelEnum(Enum):
 
 
 class CarModel(db.Model):
-    __tablename__ = 'cars'
+    __tablename__ = "cars"
 
     car_id = db.Column(db.Integer, primary_key=True)
     color = db.Column(db.Enum(ColorEnum), nullable=False)
     model = db.Column(db.Enum(ModelEnum), nullable=False)
-    owner_id = db.Column(db.Integer, ForeignKey('owners.owner_id'), nullable=False)
+    owner_id = db.Column(db.Integer, ForeignKey("owners.owner_id"), nullable=False)
 
     def __repr__(self):
-        return f'<Car {self.car_id}>'
-
+        return f"<Car {self.car_id}>"
 
     def __init__(self, car_id, color, model, owner_id):
         self.car_id = car_id
@@ -51,4 +51,3 @@ class CarModel(db.Model):
     def save_car(self):
         db.session.add(self)
         db.session.commit()
-    
