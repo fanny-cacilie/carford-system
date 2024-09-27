@@ -1,30 +1,27 @@
 from app import db
+from app.cars.models import CarModel
 
 class OwnerModel(db.Model):
     __tablename__ = 'owners'
 
     owner_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    car_quantity = db.Column(db.Integer, nullable=False)
     sale_opportunity = db.Column(db.Boolean, nullable=False, default=True)
-    cars = db.Column(db.Integer, nullable=False) # db.relationship('CarModel', backref='OwnerModel')
+    cars = db.relationship('CarModel', backref='owner', lazy='select')
+
 
     def __repr__(self):
         return f'<Owner {self.owner_id}>'
 
     
-    def __init__(self, owner_id, car_quantity, sale_opportunity, cars):
+    def __init__(self, owner_id, sale_opportunity):
         self.owner_id = owner_id
-        self.car_quantity = car_quantity
         self.sale_opportunity = sale_opportunity
-        self.cars = cars
 
 
     def json(self):
         return {
             "owner_id": self.owner_id,
-            "car_quantity": self.car_quantity,
             "sale_opportunity": self.sale_opportunity,
-            "cars": self.cars,
         }
 
 
