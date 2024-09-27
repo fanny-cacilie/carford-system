@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  database:
+    container_name: database
+    image: postgres
+    environment:
+      POSTGRES_DBNAME: postgres
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - target: 5432
+        published: 5438
+    volumes:
+      - pgdata:/var/lib/postgresql
+    networks:
+      - carford-network
+  backend-app:
+    container_name: backend-app
+    image: backend-app
+    depends_on:
+      - database
+    build: .
+    volumes:
+      - "./:/carford"
+    ports:
+      - "8000:8000"
+    networks:
+      - carford-network
+
+volumes:
+  pgdata:
+networks:
+  carford-network:
+    driver: bridge
