@@ -27,6 +27,15 @@ services:
       - "8000:8000"
     networks:
       - carford-network
+  test:
+    container_name: backend-app-test
+    image: backend-app
+    depends_on:
+      - database
+    build: .
+    command: ["sh", "-c", "PYTHONPATH=/carford pytest app/tests"]    
+    networks:
+      - carford-network
 
 volumes:
   pgdata:
