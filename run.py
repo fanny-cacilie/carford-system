@@ -10,7 +10,6 @@ def create_tables():
         for _ in range(50):
             try:
                 db.create_all()
-                print("Tables created!")
                 return
             except Exception:
                 print("Database is not ready yet. Waiting...")

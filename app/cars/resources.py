@@ -1,20 +1,9 @@
 from flask import request
 from flask_restful import Resource, reqparse
-from app.cars.models import CarModel, ColorEnum, ModelEnum
+
+from app.cars.models import CarModel
 from app.owners.models import OwnerModel
-
-
-def validate_color(value):
-    try:
-        return ColorEnum[value]
-    except KeyError:
-        raise ValueError(f"{value} is not a valid color. Possible values: {[color.name for color in ColorEnum]}.")
-
-def validate_model(value):
-    try:
-        return ModelEnum[value]
-    except KeyError:
-        raise ValueError(f"{value} is not a valid model. Possible values: {[model.name for model in ModelEnum]}.")
+from app.utils import validate_color, validate_model
 
 
 class Cars(Resource):
@@ -29,10 +18,7 @@ class Cars(Resource):
     arguments.add_argument("owner_id", type=int, required=True, help="Owner ID is required.")
 
     def post(self):
-
         kwargs = Cars.arguments.parse_args()
-
-        print(kwargs)
 
         car_id = kwargs['car_id']
         if CarModel.find_car(car_id):
@@ -44,8 +30,13 @@ class Cars(Resource):
             return {"message": f"Error while registering car. Owner id '{owner_id}' does not exist in the system."}, 400
 
         owner = OwnerModel.find_owner(owner_id)
-        if len(owner.cars) > 3:
+
+        if len(owner.cars) > 2:
             return {"message": f"Error while registering car to Owner id '{owner_id}'. It has reached the limit of 3 cars."}, 400
+
+        if len(owner.cars) > 0:
+            owner.sale_opportunity = False
+            owner.save_owner()
 
         try:
             car.save_car()
