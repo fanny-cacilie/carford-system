@@ -1,13 +1,26 @@
+from enum import Enum
 from sqlalchemy import ForeignKey
 
 from app import db
+
+class ColorEnum(Enum):
+    yellow = 1
+    blue = 2
+    gray = 3
+
+
+class ModelEnum(Enum):
+    hatch = 1
+    sedan = 2
+    convertible = 3
+
 
 class CarModel(db.Model):
     __tablename__ = 'cars'
 
     car_id = db.Column(db.Integer, primary_key=True)
-    color = db.Column(db.String(15), nullable=False)
-    model = db.Column(db.String(15), nullable=False)
+    color = db.Column(db.Enum(ColorEnum), nullable=False)
+    model = db.Column(db.Enum(ModelEnum), nullable=False)
     owner_id = db.Column(db.Integer, ForeignKey('owners.owner_id'), nullable=False)
 
     def __repr__(self):
@@ -23,8 +36,8 @@ class CarModel(db.Model):
     def json(self):
         return {
             "car_id": self.car_id,
-            "color": self.color,
-            "model": self.model,
+            "color": self.color.name,
+            "model": self.model.name,
             "owner_id": self.owner_id,
         }
 
